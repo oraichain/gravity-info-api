@@ -1,6 +1,4 @@
-.App {
-  text-align: center;
-}
+
 
 .App-logo {
   height: 40vmin;
@@ -19,14 +17,12 @@
 
 .App {
   background: linear-gradient(180deg, rgba(47,41,65,1) 0%, rgba(0,0,0,1) 94%, rgba(0,0,0,1) 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: flex;
-  align-items: center;
+  min-height: 100vh;  
+  text-align: center;  
   justify-content: center;
   font-size: calc(5px + 2vmin);
   color: white;
-  padding: 20px;
+  
 }
 
 .ParametersCard {
