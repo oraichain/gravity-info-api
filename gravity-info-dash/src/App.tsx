@@ -68,12 +68,13 @@ function App() {
     []
   );
 
-  const [evmChainPrefix, setEvmChainPrefix] = useState<string | undefined>();
+  const url = new URL(window.location.href);
+
+  const evmChainPrefix = url.searchParams.get('prefix') || 'oraib';
 
   const getEvmChainConfigs = async () => {
     await callMethodFromUrl('evm_chain_configs', (json: EvmChainConfig[]) => {
       if (json.length) {
-        setEvmChainPrefix(json[0].prefix);
         setEvmChainConfigs(json);
       }
     });
@@ -187,7 +188,8 @@ function App() {
             configs={evmChainConfigs}
             evmChainPrefix={evmChainPrefix}
             onSelect={(config: EvmChainConfig) => {
-              setEvmChainPrefix(config.prefix);
+              url.searchParams.set('prefix', config.prefix);
+              window.location.href = url.toString();
             }}
           />
 
