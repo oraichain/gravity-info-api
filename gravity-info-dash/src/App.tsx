@@ -7,8 +7,7 @@ import {
   Erc20Metadata,
   EthInfo,
   GravityInfo,
-  VolumeInfo,
-  EvmChainConfig
+  VolumeInfo
 } from './types';
 import { EvmChains } from './components/EvmChains';
 import { IncommingTransactions } from './components/IncommingTransactions';
@@ -70,7 +69,7 @@ function App() {
 
   const evmChainPrefix = url.searchParams.get('prefix') || 'oraib';
 
-  const getEvmChainConfigs = async () => {
+  const getEvmChainPrefixes = async () => {
     await callMethodFromUrl('evm_chain_prefixes', (json: string[]) => {
       if (json.length) {
         setEvmChainPrefixes(json);
@@ -114,8 +113,7 @@ function App() {
   };
 
   useEffect(() => {
-    getEvmChainConfigs();
-    //eslint-disable-next-line react-hooks/exhaustive-deps
+    getEvmChainPrefixes();
   }, []);
   useEffect(() => {
     let timer: any = null;

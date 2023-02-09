@@ -1,6 +1,4 @@
-import { title } from 'process';
 import { Button, ButtonGroup, Card, CardBody, CardTitle } from 'reactstrap';
-import { EvmChainConfig } from '../types';
 
 interface Props {
   list: string[];
@@ -9,7 +7,12 @@ interface Props {
   onSelect: (config: string) => void;
 }
 
-export const EvmChains: React.FC<Props> = ({ list, onSelect, current }) => {
+export const EvmChains: React.FC<Props> = ({
+  list,
+  onSelect,
+  current,
+  title
+}) => {
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 20 }}>
       <CardBody>

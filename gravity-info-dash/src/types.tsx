@@ -151,11 +151,3 @@ export type VolumeInfo = {
   weekly_inflow: number;
   weekly_outflow: number;
 };
-
-export type EvmChainConfig = {
-  prefix: string;
-  rpc: string;
-  finality_delay: number;
-  block_time: number;
-  loop_time: number;
-};
