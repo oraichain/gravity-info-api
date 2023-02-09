@@ -116,9 +116,14 @@ async fn get_bridge_volume(req: HttpRequest) -> impl Responder {
     }
 }
 
-#[get("/evm_chain_configs")]
-async fn get_all_evm_chain_configs() -> impl Responder {
-    HttpResponse::Ok().json(get_evm_chain_configs())
+#[get("/evm_chain_prefixes")]
+async fn get_evm_chain_prefixes() -> impl Responder {
+    HttpResponse::Ok().json(
+        get_evm_chain_configs()
+            .iter()
+            .map(|evm_chain| evm_chain.prefix.to_string())
+            .collect::<Vec<String>>(),
+    )
 }
 
 #[actix_web::main]
@@ -206,7 +211,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_gravity_bridge_info)
             .service(erc20_metadata)
             .service(get_bridge_volume)
-            .service(get_all_evm_chain_configs)
+            .service(get_evm_chain_prefixes)
     });
 
     log::info!(

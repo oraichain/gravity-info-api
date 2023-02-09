@@ -1,34 +1,32 @@
+import { title } from 'process';
 import { Button, ButtonGroup, Card, CardBody, CardTitle } from 'reactstrap';
 import { EvmChainConfig } from '../types';
 
 interface Props {
-  configs: Array<EvmChainConfig>;
-  evmChainPrefix?: string;
-  onSelect: (config: EvmChainConfig) => void;
+  list: string[];
+  current?: string;
+  title: string;
+  onSelect: (config: string) => void;
 }
 
-export const EvmChains: React.FC<Props> = ({
-  configs,
-  onSelect,
-  evmChainPrefix
-}) => {
+export const EvmChains: React.FC<Props> = ({ list, onSelect, current }) => {
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 20 }}>
       <CardBody>
         <CardTitle tag="h1">Evm chains</CardTitle>
         <ButtonGroup size="sm">
-          {configs.map((config) => (
+          {list.map((item) => (
             <Button
               outline
               color="primary"
-              title={config.rpc}
-              active={config.prefix === evmChainPrefix}
-              key={config.prefix}
+              title={title}
+              active={item === current}
+              key={item}
               onClick={() => {
-                onSelect(config);
+                onSelect(item);
               }}
             >
-              {config.prefix}
+              {item}
             </Button>
           ))}
         </ButtonGroup>

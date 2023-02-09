@@ -64,18 +64,16 @@ function App() {
     useState<Array<Erc20Metadata> | null>(null);
   const [volumeInfo, setVolumeInfo] = useState<VolumeInfo | null>(null);
 
-  const [evmChainConfigs, setEvmChainConfigs] = useState<Array<EvmChainConfig>>(
-    []
-  );
+  const [evmChainPrefixes, setEvmChainPrefixes] = useState<Array<string>>([]);
 
   const url = new URL(window.location.href);
 
   const evmChainPrefix = url.searchParams.get('prefix') || 'oraib';
 
   const getEvmChainConfigs = async () => {
-    await callMethodFromUrl('evm_chain_configs', (json: EvmChainConfig[]) => {
+    await callMethodFromUrl('evm_chain_prefixes', (json: string[]) => {
       if (json.length) {
-        setEvmChainConfigs(json);
+        setEvmChainPrefixes(json);
       }
     });
   };
@@ -185,10 +183,11 @@ function App() {
         </Col>
         <Col>
           <EvmChains
-            configs={evmChainConfigs}
-            evmChainPrefix={evmChainPrefix}
-            onSelect={(config: EvmChainConfig) => {
-              url.searchParams.set('prefix', config.prefix);
+            list={evmChainPrefixes}
+            current={evmChainPrefix}
+            title={evmChainName}
+            onSelect={(prefix) => {
+              url.searchParams.set('prefix', prefix);
               window.location.href = url.toString();
             }}
           />
