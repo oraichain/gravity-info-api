@@ -16,7 +16,7 @@ export const EvmChains: React.FC<Props> = ({
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 20 }}>
       <CardBody>
-        <CardTitle tag="h1">Evm chains</CardTitle>
+        <CardTitle tag="h4">Evm chains</CardTitle>
         <ButtonGroup size="sm">
           {list.map((item) => (
             <Button

@@ -165,6 +165,15 @@ function App() {
     <Container className="App" fluid>
       <Row>
         <Col>
+          <EvmChains
+            list={evmChainPrefixes}
+            current={evmChainPrefix}
+            title={evmChainName}
+            onSelect={(prefix) => {
+              url.searchParams.set('prefix', prefix);
+              window.location.href = url.toString();
+            }}
+          />
           <BatchQueue
             evmChainName={evmChainName}
             etherscanBase={etherscanBase}
@@ -180,16 +189,6 @@ function App() {
           />
         </Col>
         <Col>
-          <EvmChains
-            list={evmChainPrefixes}
-            current={evmChainPrefix}
-            title={evmChainName}
-            onSelect={(prefix) => {
-              url.searchParams.set('prefix', prefix);
-              window.location.href = url.toString();
-            }}
-          />
-
           <TransactionQueue
             evmChainName={evmChainName}
             gravityBridgeInfo={gravityBridgeInfo}

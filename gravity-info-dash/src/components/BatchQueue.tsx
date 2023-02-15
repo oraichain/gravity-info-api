@@ -31,7 +31,7 @@ export const BatchQueue: React.FC<Props> = ({
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 20 }}>
       <CardBody>
-        <CardTitle tag="h1">Batch Queue</CardTitle>
+        <CardTitle tag="h4">Batch Queue</CardTitle>
         <CardSubtitle>
           These transactions are in batches and waiting to be relayed to{' '}
           <strong>{evmChainName}</strong>

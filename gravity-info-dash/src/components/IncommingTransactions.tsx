@@ -21,7 +21,7 @@ export const IncommingTransactions: React.FC<Props> = ({
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 20 }}>
       <CardBody>
-        <CardTitle tag="h1">Incoming transactions</CardTitle>
+        <CardTitle tag="h4">Incoming transactions</CardTitle>
         <Table
           dark
           borderless

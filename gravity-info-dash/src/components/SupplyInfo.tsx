@@ -10,7 +10,7 @@ export const SupplyInfo: React.FC<Props> = ({ supplyInfo }) => {
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 25 }}>
       <CardBody>
-        <CardTitle tag="h1">Gravity Supply Info</CardTitle>
+        <CardTitle tag="h4">Gravity Supply Info</CardTitle>
         <div>
           Total Supply: {(supplyInfo.total_supply / 10 ** 12).toFixed(2)}M{' '}
           {DENOM}

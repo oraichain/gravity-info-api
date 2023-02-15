@@ -10,7 +10,7 @@ export const GravityVolume: React.FC<Props> = ({ volumeInfo }) => {
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 25 }}>
       <CardBody>
-        <CardTitle tag="h1">Gravity Volume</CardTitle>
+        <CardTitle tag="h4">Gravity Volume</CardTitle>
         <div>
           Daily Volume ${(volumeInfo.daily_volume / decimals).toFixed(2)}M
         </div>

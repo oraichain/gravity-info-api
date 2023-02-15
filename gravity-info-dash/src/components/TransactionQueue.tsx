@@ -16,7 +16,7 @@ export const TransactionQueue: React.FC<Props> = ({
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 20 }}>
       <CardBody>
-        <CardTitle tag="h1">Transaction Queue</CardTitle>
+        <CardTitle tag="h4">Transaction Queue</CardTitle>
         <CardSubtitle className="mb-4">
           These transactions are not yet in batches, a batch will be reqested
           when the fee amount exceeds the cost to execute on{' '}

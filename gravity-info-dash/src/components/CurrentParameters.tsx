@@ -16,7 +16,7 @@ export const CurrentParameters: React.FC<Props> = ({
   return (
     <Card className="ParametersCard" style={{ borderRadius: 8, padding: 25 }}>
       <CardBody>
-        <CardTitle tag="h1">Current Gravity Parameters</CardTitle>
+        <CardTitle tag="h4">Current Gravity Parameters</CardTitle>
         <div>
           Evm Contract Address:{' '}
           {evmChainParam?.bridge_ethereum_address && (
