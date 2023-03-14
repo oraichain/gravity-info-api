@@ -126,6 +126,14 @@ pub fn set_evm_chain_configs(configs: Vec<EvmChainConfig>) {
     *lock = Some(configs)
 }
 
+pub fn pre_processing_web3(web3: &mut Web3) {
+    // check if eth_rpc_url is special url, such as tron then need to provide API_KEY from env to make sure it works without
+    if web3.get_url().starts_with("https://api.trongrid.io") {
+        web3.set_header("TRON-PRO-API-KEY", option_env!("API_KEY").unwrap());
+        web3.set_check_sync(false);
+    }
+}
+
 pub fn blockchain_info_thread(gravity_config: GravityConfig) {
     info!("Starting Gravity info watcher");
 
@@ -141,7 +149,8 @@ pub fn blockchain_info_thread(gravity_config: GravityConfig) {
             // loop for list evm chains
 
             runner.block_on(async {
-                let web30 = Web3::new(&evm_chain_config.rpc, contact.get_timeout());
+                let mut web3 = Web3::new(&evm_chain_config.rpc, contact.get_timeout());
+                pre_processing_web3(&mut web3);
 
                 // since we're rebuilding the async env every loop iteration we need to re-init this
                 let mut grpc_client = GravityQueryClient::connect(contact.get_url())
@@ -171,14 +180,14 @@ pub fn blockchain_info_thread(gravity_config: GravityConfig) {
                     };
 
                 let eth_info = query_eth_info(
-                    &web30,
+                    &web3,
                     gravity_contract_address,
                     evm_chain_config.finality_delay,
                     evm_chain_config.block_time,
                 );
                 let erc20_metadata = get_all_erc20_metadata(
                     &contact,
-                    &web30,
+                    &web3,
                     &mut grpc_client,
                     &evm_chain_config.prefix,
                     evm_chain_config.sender,
@@ -210,7 +219,7 @@ pub fn blockchain_info_thread(gravity_config: GravityConfig) {
 /// gets information about all tokens that have been bridged
 async fn get_all_erc20_metadata(
     contact: &Contact,
-    web30: &Web3,
+    web3: &Web3,
     grpc_client: &mut GravityQueryClient<Channel>,
     evm_chain_prefix: &str,
     query_sender: EthAddress,
@@ -236,7 +245,7 @@ async fn get_all_erc20_metadata(
                 Err(_) => continue,
             }
         };
-        futs.push(get_metadata(web30, erc20, query_sender));
+        futs.push(get_metadata(web3, erc20, query_sender));
     }
     let results = join_all(futs).await;
     let mut metadata = Vec::new();
@@ -249,12 +258,12 @@ async fn get_all_erc20_metadata(
 }
 
 async fn get_metadata(
-    web30: &Web3,
+    web3: &Web3,
     erc20: EthAddress,
     query_sender: EthAddress,
 ) -> Result<Erc20Metadata, GravityError> {
-    let symbol = web30.get_erc20_symbol(erc20, query_sender);
-    let decimals = web30.get_erc20_decimals(erc20, query_sender);
+    let symbol = web3.get_erc20_symbol(erc20, query_sender);
+    let decimals = web3.get_erc20_decimals(erc20, query_sender);
     let (symbol, decimals) = join(symbol, decimals).await;
     let (symbol, decimals) = (symbol?, decimals?);
 
@@ -272,7 +281,7 @@ async fn get_metadata(
     // one of whatever this token is
     let one: Uint256 = 10u128.pow(downcast_decimals).into();
 
-    let pricev3 = web30.get_uniswap_v3_price_with_retries(
+    let pricev3 = web3.get_uniswap_v3_price_with_retries(
         query_sender,
         erc20,
         *USDC_CONTRACT_ADDRESS,
@@ -280,8 +289,7 @@ async fn get_metadata(
         None,
         None,
     );
-    let pricev2 =
-        web30.get_uniswap_v2_price(query_sender, erc20, *USDC_CONTRACT_ADDRESS, one, None);
+    let pricev2 = web3.get_uniswap_v2_price(query_sender, erc20, *USDC_CONTRACT_ADDRESS, one, None);
 
     let (pricev3, pricev2) = join(pricev3, pricev2).await;
 

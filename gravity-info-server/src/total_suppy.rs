@@ -115,12 +115,14 @@ async fn compute_liquid_supply(
     .unwrap();
     // lets do the easy totals first, grand total and communiy pool
     let totals = contact.query_total_supply().await?;
+
     let mut total_supply = None;
     for i in totals {
         if i.denom == gravity_config.denom {
             total_supply = Some(i.amount);
         }
     }
+
     let total_supply = total_supply.unwrap();
 
     let mut community_pool = None;
@@ -478,8 +480,8 @@ struct UserInfo {
 #[cfg(test)]
 mod tests {
     use crate::{
-        DEFAULT_BLOCK_PER_DAY, DEFAULT_DENOM, DEFAULT_HOST, DEFAULT_LOOP_TIME, DEFAULT_PORT,
-        DEFAULT_PREFIX, DEFAULT_REQUEST_TIMEOUT,
+        DEFAULT_BLOCK_PER_DAY, DEFAULT_HOST, DEFAULT_LOOP_TIME, DEFAULT_PORT, DEFAULT_PREFIX,
+        DEFAULT_REQUEST_TIMEOUT,
     };
 
     use super::*;
@@ -494,7 +496,7 @@ mod tests {
             prefix: DEFAULT_PREFIX.to_string(),
             ssl: false,
             port: DEFAULT_PORT,
-            denom: DEFAULT_DENOM.to_string(),
+            denom: "ugraviton".to_string(),
             loop_time: DEFAULT_LOOP_TIME,
             block_per_day: DEFAULT_BLOCK_PER_DAY,
             host: DEFAULT_HOST.to_string(),
