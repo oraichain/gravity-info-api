@@ -126,14 +126,6 @@ pub fn set_evm_chain_configs(configs: Vec<EvmChainConfig>) {
     *lock = Some(configs)
 }
 
-pub fn pre_processing_web3(web3: &mut Web3) {
-    // check if eth_rpc_url is special url, such as tron then need to provide API_KEY from env to make sure it works without
-    if web3.get_url().starts_with("https://api.trongrid.io") {
-        web3.set_header("TRON-PRO-API-KEY", option_env!("API_KEY").unwrap());
-        web3.set_check_sync(false);
-    }
-}
-
 pub fn blockchain_info_thread(gravity_config: GravityConfig) {
     info!("Starting Gravity info watcher");
 
@@ -149,8 +141,7 @@ pub fn blockchain_info_thread(gravity_config: GravityConfig) {
             // loop for list evm chains
 
             runner.block_on(async {
-                let mut web3 = Web3::new(&evm_chain_config.rpc, contact.get_timeout());
-                pre_processing_web3(&mut web3);
+                let web3 = Web3::new(&evm_chain_config.rpc, contact.get_timeout());
 
                 // since we're rebuilding the async env every loop iteration we need to re-init this
                 let mut grpc_client = GravityQueryClient::connect(contact.get_url())

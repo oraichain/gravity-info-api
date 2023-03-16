@@ -20,7 +20,6 @@ use web30::client::Web3;
 use web30::types::Log;
 
 use crate::gravity_info::get_evm_chain_configs;
-use crate::gravity_info::pre_processing_web3;
 use crate::gravity_info::GravityConfig;
 use crate::gravity_info::{get_erc20_metadata, get_gravity_info, Erc20Metadata};
 use clarity::Address as EthAddress;
@@ -66,8 +65,7 @@ pub fn bridge_volume_thread(gravity_config: GravityConfig) {
             let runner = System::new();
 
             runner.block_on(async {
-                let mut web3 = Web3::new(&evm_chain_config.rpc, contact.get_timeout());
-                pre_processing_web3(&mut web3);
+                let web3 = Web3::new(&evm_chain_config.rpc, contact.get_timeout());
                 let metadata = get_erc20_metadata(&evm_chain_config.prefix);
                 let gravity_params = get_gravity_info(&evm_chain_config.prefix);
                 if let (Some(metadata), Some(gravity_params)) = (metadata, gravity_params) {
