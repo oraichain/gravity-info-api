@@ -411,12 +411,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "349a06037c7bf932dd7e7d1f653678b2038b9ad46a74102f1fc7bd7872678cce"
 
 [[package]]
-name = "base58"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6107fe1be6682a68940da878d9e9f5e90ca5745b3dec9fd1bb393c8777d4f581"
-
-[[package]]
 name = "base64"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -682,7 +676,7 @@ dependencies = [
 [[package]]
 name = "cosmos_gravity"
 version = "0.1.0"
-source = "git+https://github.com/oraichain/Gravity-Bridge?rev=26e5c72a#26e5c72af9c0048f999807f570e006ff7b6743dd"
+source = "git+https://github.com/oraichain/Gravity-Bridge?rev=0d78f7d#0d78f7df3338a8a0b4657720a9bc5b5ce29058b0"
 dependencies = [
  "bytes",
  "clarity",
@@ -701,7 +695,7 @@ dependencies = [
  "sha3",
  "tokio",
  "tonic",
- "web30 0.23.1 (git+https://github.com/oraichain/web30.git?rev=41e90c0)",
+ "web30",
 ]
 
 [[package]]
@@ -954,17 +948,15 @@ dependencies = [
 [[package]]
 name = "ethereum_gravity"
 version = "0.1.0"
-source = "git+https://github.com/oraichain/Gravity-Bridge?rev=26e5c72a#26e5c72af9c0048f999807f570e006ff7b6743dd"
+source = "git+https://github.com/oraichain/Gravity-Bridge?rev=0d78f7d#0d78f7df3338a8a0b4657720a9bc5b5ce29058b0"
 dependencies = [
  "clarity",
  "deep_space",
  "gravity_utils",
- "heliosphere 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=95e043e)",
- "k256",
  "log",
  "num256",
  "sha3",
- "web30 0.23.1 (git+https://github.com/oraichain/web30.git?rev=41e90c0)",
+ "web30",
 ]
 
 [[package]]
@@ -1171,13 +1163,13 @@ dependencies = [
  "serde_derive",
  "serde_yaml",
  "tonic",
- "web30 0.23.1 (git+https://github.com/oraichain/web30.git?rev=9858509)",
+ "web30",
 ]
 
 [[package]]
 name = "gravity_proto"
 version = "0.1.0"
-source = "git+https://github.com/oraichain/Gravity-Bridge?rev=26e5c72a#26e5c72af9c0048f999807f570e006ff7b6743dd"
+source = "git+https://github.com/oraichain/Gravity-Bridge?rev=0d78f7d#0d78f7df3338a8a0b4657720a9bc5b5ce29058b0"
 dependencies = [
  "cosmos-sdk-proto-althea",
  "deep_space",
@@ -1189,7 +1181,7 @@ dependencies = [
 [[package]]
 name = "gravity_utils"
 version = "0.1.0"
-source = "git+https://github.com/oraichain/Gravity-Bridge?rev=26e5c72a#26e5c72af9c0048f999807f570e006ff7b6743dd"
+source = "git+https://github.com/oraichain/Gravity-Bridge?rev=0d78f7d#0d78f7df3338a8a0b4657720a9bc5b5ce29058b0"
 dependencies = [
  "clarity",
  "deep_space",
@@ -1205,7 +1197,7 @@ dependencies = [
  "tokio",
  "tonic",
  "url",
- "web30 0.23.1 (git+https://github.com/oraichain/web30.git?rev=41e90c0)",
+ "web30",
 ]
 
 [[package]]
@@ -1262,23 +1254,8 @@ version = "0.2.0"
 source = "git+https://github.com/oraichain/heliosphere.git?rev=79c86e5#79c86e5c39646a19d56b5e0aa3613579603c11d4"
 dependencies = [
  "awc",
- "heliosphere-core 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=79c86e5)",
- "heliosphere-signer 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=79c86e5)",
- "hex",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
-]
-
-[[package]]
-name = "heliosphere"
-version = "0.2.0"
-source = "git+https://github.com/oraichain/heliosphere.git?rev=95e043e#95e043ef4a02fc776baa1aad0eed71dc0c401cb9"
-dependencies = [
- "awc",
- "heliosphere-core 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=95e043e)",
- "heliosphere-signer 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=95e043e)",
+ "heliosphere-core",
+ "heliosphere-signer",
  "hex",
  "serde",
  "serde_json",
@@ -1302,38 +1279,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "heliosphere-core"
-version = "0.2.0"
-source = "git+https://github.com/oraichain/heliosphere.git?rev=95e043e#95e043ef4a02fc776baa1aad0eed71dc0c401cb9"
-dependencies = [
- "bs58",
- "clarity",
- "derive-new",
- "ethabi",
- "hex",
- "serde",
- "serde_json",
- "sha2 0.10.6",
-]
-
-[[package]]
 name = "heliosphere-signer"
 version = "0.2.0"
 source = "git+https://github.com/oraichain/heliosphere.git?rev=79c86e5#79c86e5c39646a19d56b5e0aa3613579603c11d4"
 dependencies = [
- "heliosphere-core 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=79c86e5)",
- "hex",
- "k256",
- "rand_core",
- "sha3",
-]
-
-[[package]]
-name = "heliosphere-signer"
-version = "0.2.0"
-source = "git+https://github.com/oraichain/heliosphere.git?rev=95e043e#95e043ef4a02fc776baa1aad0eed71dc0c401cb9"
-dependencies = [
- "heliosphere-core 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=95e043e)",
+ "heliosphere-core",
  "hex",
  "k256",
  "rand_core",
@@ -3030,33 +2980,12 @@ dependencies = [
 [[package]]
 name = "web30"
 version = "0.23.1"
-source = "git+https://github.com/oraichain/web30.git?rev=41e90c0#41e90c0c90dc50dde4a745aaf1d30d3ae6275912"
-dependencies = [
- "awc",
- "base58",
- "clarity",
- "futures",
- "hex",
- "lazy_static",
- "log",
- "num-traits",
- "num256",
- "serde",
- "serde_derive",
- "serde_json",
- "sha2 0.10.6",
- "tokio",
-]
-
-[[package]]
-name = "web30"
-version = "0.23.1"
-source = "git+https://github.com/oraichain/web30.git?rev=9858509#985850953c66e80c682c8e0c4825944153256b69"
+source = "git+https://github.com/oraichain/web30.git?rev=1c463fc#1c463fcd2b43eb7a9a75d2664f4583c9fa33d8e3"
 dependencies = [
  "awc",
  "clarity",
  "futures",
- "heliosphere 0.2.0 (git+https://github.com/oraichain/heliosphere.git?rev=79c86e5)",
+ "heliosphere",
  "lazy_static",
  "log",
  "num-traits",
