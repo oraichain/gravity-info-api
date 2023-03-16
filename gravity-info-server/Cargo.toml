@@ -6,10 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ethereum_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="26e5c72a"}
-cosmos_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="26e5c72a"}
-gravity_utils = {git = "https://github.com/oraichain/Gravity-Bridge", rev="26e5c72a"}
-gravity_proto = {git = "https://github.com/oraichain/Gravity-Bridge", rev="26e5c72a"}
+ethereum_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="c0bc9741"}
+cosmos_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="c0bc9741"}
+gravity_utils = {git = "https://github.com/oraichain/Gravity-Bridge", rev="c0bc9741"}
+gravity_proto = {git = "https://github.com/oraichain/Gravity-Bridge", rev="c0bc9741"}
 deep_space = {git = "https://github.com/oraichain/deep_space.git", rev = "a2e1353"}
 web30 = {git = "https://github.com/oraichain/web30.git", rev = "9858509"}
 clarity = "0.7"
