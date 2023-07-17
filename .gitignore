@@ -4,3 +4,4 @@ scripts/gravity-info-dash/*
 
 config.yaml
 .firebase
+gravity-info-server/transactions

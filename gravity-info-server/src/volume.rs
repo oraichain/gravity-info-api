@@ -5,8 +5,7 @@ use actix_web::cookie::time::Instant;
 use actix_web::rt::System;
 use clarity::Uint256;
 use deep_space::Contact;
-use futures::future::join;
-use futures::future::join_all;
+use futures::future::{join3, join_all};
 use gravity_utils::error::GravityError;
 use log::{info, warn};
 use serde::Serialize;
@@ -34,6 +33,9 @@ pub struct BridgeVolumeNumbers {
     pub weekly_volume: f64,
     pub weekly_inflow: f64,
     pub weekly_outflow: f64,
+    pub monthly_volume: f64,
+    pub monthly_inflow: f64,
+    pub monthly_outflow: f64,
 }
 
 lazy_static! {
@@ -87,6 +89,8 @@ pub fn bridge_volume_thread(gravity_config: GravityConfig) {
                         latest_block.clone() - gravity_config.block_per_day.into();
                     let starting_block_weekly =
                         latest_block.clone() - (gravity_config.block_per_day * 7).into();
+                    let starting_block_monthly =
+                        latest_block.clone() - (gravity_config.block_per_day * 30).into();
                     let daily_volume = get_bridge_volume_for_range(
                         starting_block_daily,
                         latest_block.clone(),
@@ -101,11 +105,19 @@ pub fn bridge_volume_thread(gravity_config: GravityConfig) {
                         gravity_contract_address,
                         &web3,
                     );
+                    let monthly_volume = get_bridge_volume_for_range(
+                        starting_block_monthly,
+                        latest_block.clone(),
+                        &metadata,
+                        gravity_contract_address,
+                        &web3,
+                    );
                     info!("Starting volume query");
                     let start = Instant::now();
-                    let (daily_volume, weekly_volume) = join(daily_volume, weekly_volume).await;
-                    match (daily_volume, weekly_volume) {
-                        (Ok(daily), Ok(weekly)) => {
+                    let (daily_volume, weekly_volume, monthly_volume) =
+                        join3(daily_volume, weekly_volume, monthly_volume).await;
+                    match (daily_volume, weekly_volume, monthly_volume) {
+                        (Ok(daily), Ok(weekly), Ok(monthly)) => {
                             set_volume_info(
                                 &evm_chain_config.prefix,
                                 BridgeVolumeNumbers {
@@ -115,6 +127,9 @@ pub fn bridge_volume_thread(gravity_config: GravityConfig) {
                                     weekly_volume: weekly.volume,
                                     weekly_inflow: weekly.inflow,
                                     weekly_outflow: weekly.outflow,
+                                    monthly_volume: monthly.volume,
+                                    monthly_inflow: monthly.inflow,
+                                    monthly_outflow: monthly.outflow,
                                 },
                             );
                             info!(
@@ -122,8 +137,9 @@ pub fn bridge_volume_thread(gravity_config: GravityConfig) {
                                 start.elapsed().as_seconds_f32()
                             );
                         }
-                        (Err(e), _) => warn!("Could not get daily volume {:?}", e),
-                        (_, Err(e)) => warn!("Could not get weekly volume {:?}", e),
+                        (Err(e), _, _) => warn!("Could not get daily volume {:?}", e),
+                        (_, Err(e), _) => warn!("Could not get weekly volume {:?}", e),
+                        (_, _, Err(e)) => warn!("Could not get monthly volume {:?}", e),
                     }
                 }
             });

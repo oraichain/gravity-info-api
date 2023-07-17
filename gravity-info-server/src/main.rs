@@ -1,18 +1,23 @@
 #[macro_use]
 extern crate lazy_static;
 
+pub mod batch_relaying;
 pub mod gravity_info;
 pub mod tls;
 pub mod total_suppy;
+pub mod transactions;
 pub mod volume;
 
 use std::env;
+use std::sync::Arc;
 use std::time::Duration;
 
+use crate::batch_relaying::generate_raw_batch_tx;
 use crate::gravity_info::{
     get_erc20_metadata, get_evm_chain_configs, set_evm_chain_configs, EvmChainConfig, GravityConfig,
 };
 use crate::total_suppy::get_supply_info;
+
 use crate::volume::get_volume_info;
 use crate::{gravity_info::get_gravity_info, tls::*};
 use actix_cors::Cors;
@@ -20,9 +25,12 @@ use actix_web::{get, web, App, HttpRequest, HttpResponse, HttpServer, Responder}
 use env_logger::Env;
 use gravity_info::{blockchain_info_thread, get_eth_info};
 use log::info;
+use rocksdb::Options;
+use rocksdb::DB;
 use rustls::ServerConfig;
 use serde::Deserialize;
 use total_suppy::chain_total_supply_thread;
+use transactions::database::transaction_info_thread;
 use volume::bridge_volume_thread;
 
 const DEFAULT_HOST: &str = "0.0.0.0";
@@ -48,6 +56,20 @@ impl Default for Params {
             evm_chain_prefix: DEFAULT_PREFIX.to_string(),
         }
     }
+}
+
+/// This is a helper api endpoint which generates an unsigned tx for a transaction batch sent from a given address
+/// and returns it to the caller.
+#[get("/batch_tx/{batch_nonce}")]
+async fn generate_batch_tx(
+    req: HttpRequest,
+    gravity_config: web::Data<GravityConfig>,
+    data: web::Path<(u64,)>,
+) -> impl Responder {
+    let params = web::Query::<Params>::from_query(req.query_string())
+        .unwrap_or(web::Query(Params::default()));
+    let nonce = data.into_inner().0;
+    generate_raw_batch_tx(gravity_config.as_ref(), &params.evm_chain_prefix, nonce).await
 }
 
 #[get("/total_supply")]
@@ -112,7 +134,7 @@ async fn get_bridge_volume(req: HttpRequest) -> impl Responder {
     match get_volume_info(&params.evm_chain_prefix) {
         Some(v) => HttpResponse::Ok().json(v),
         None => HttpResponse::InternalServerError()
-            .json("Info not yet generated, please query in 5 minutes"),
+            .json("Info not yet generated, please query in 20 minutes"),
     }
 }
 
@@ -124,6 +146,21 @@ async fn get_evm_chain_prefixes() -> impl Responder {
             .map(|evm_chain| evm_chain.prefix.to_string())
             .collect::<Vec<String>>(),
     )
+}
+
+#[get("/transactions/send_to_eth")]
+async fn get_all_msg_send_to_eth_transactions(db: web::Data<Arc<DB>>) -> impl Responder {
+    transactions::endpoints::get_all_msg_send_to_eth_transactions(db).await
+}
+
+#[get("/transactions/ibc_transfer")]
+async fn get_all_msg_ibc_transfer_transactions(db: web::Data<Arc<DB>>) -> impl Responder {
+    transactions::endpoints::get_all_msg_ibc_transfer_transactions(db).await
+}
+
+#[get("/transactions/send_to_eth/time")]
+async fn get_send_to_eth_transaction_totals(db: web::Data<Arc<DB>>) -> impl Responder {
+    transactions::endpoints::get_send_to_eth_transaction_totals(db).await
 }
 
 #[actix_web::main]
@@ -185,6 +222,13 @@ async fn main() -> std::io::Result<()> {
             .unwrap_or(DEFAULT_BLOCK_PER_DAY),
     };
 
+    // starts a background thread for downloading transactions
+    let mut db_options = Options::default();
+    db_options.create_if_missing(true);
+    let db = Arc::new(DB::open(&db_options, "transactions").expect("Failed to open database"));
+    let api_db = web::Data::new(db.clone());
+    transaction_info_thread(gravity_config.clone(), db.clone());
+
     // pass cloned structure to thread instead of moving local values
     // starts background thread for gathering into
     blockchain_info_thread(gravity_config.clone());
@@ -196,7 +240,9 @@ async fn main() -> std::io::Result<()> {
     openssl_probe::init_ssl_cert_env_vars();
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
-    let server = HttpServer::new(|| {
+    let gravity_config_data = web::Data::new(gravity_config.clone());
+
+    let server = HttpServer::new(move || {
         App::new()
             .wrap(
                 Cors::default()
@@ -212,6 +258,12 @@ async fn main() -> std::io::Result<()> {
             .service(erc20_metadata)
             .service(get_bridge_volume)
             .service(get_evm_chain_prefixes)
+            .app_data(gravity_config_data.clone())
+            .app_data(api_db.clone())
+            .service(get_all_msg_send_to_eth_transactions)
+            .service(get_all_msg_ibc_transfer_transactions)
+            .service(get_send_to_eth_transaction_totals)
+            .service(generate_batch_tx)
     });
 
     log::info!(

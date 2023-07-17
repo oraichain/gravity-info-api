@@ -6,13 +6,14 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ethereum_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="0d78f7d"}
-cosmos_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="0d78f7d"}
-gravity_utils = {git = "https://github.com/oraichain/Gravity-Bridge", rev="0d78f7d"}
-gravity_proto = {git = "https://github.com/oraichain/Gravity-Bridge", rev="0d78f7d"}
-web30 = {git = "https://github.com/oraichain/web30.git", rev = "1c463fc"}
-deep_space = {git = "https://github.com/oraichain/deep_space.git", rev = "a2e1353"}
-clarity = "0.7"
+ethereum_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="55264568"}
+cosmos_gravity = {git = "https://github.com/oraichain/Gravity-Bridge", rev="55264568"}
+gravity_utils = {git = "https://github.com/oraichain/Gravity-Bridge", rev="55264568"}
+gravity_proto = {git = "https://github.com/oraichain/Gravity-Bridge", rev="55264568"}
+relayer = {git = "https://github.com/oraichain/Gravity-Bridge", rev="55264568"}
+web30 = {git = "https://github.com/oraichain/web30.git", rev = "6a53621"}
+deep_space = {git = "https://github.com/oraichain/deep_space.git", rev = "7676bdd"}
+clarity = "1.2.3"
 serde_derive = "1"
 serde = { version = "1.0", features = ["derive"] }
 env_logger = "0.10"
@@ -27,6 +28,16 @@ futures = "0.3"
 num256 = "0.5"
 openssl-probe = "0.1"
 serde_yaml = "0.9.16"
+tokio = {version="1", features=["rt-multi-thread"]}
+cosmos-sdk-proto = {git = "https://github.com/oraichain/cosmos-rust", rev = "19f3de7", package = "cosmos-sdk-proto-althea"}
+sha256 = "1"
+rocksdb = "0.20.1"
+actix-rt = "2.5.0"
+serde_json = "1.0"
+json = "0.12.4"
+hex = "0.4"
+chrono = "0.4.24"
+rust_decimal= "1.29.1"
 
 [features]
 development = []
