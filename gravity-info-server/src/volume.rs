@@ -86,14 +86,14 @@ pub fn bridge_volume_thread(gravity_config: GravityConfig) {
                         }
                     };
                     let starting_block_daily =
-                        latest_block.clone() - gravity_config.block_per_day.into();
+                        latest_block - gravity_config.block_per_day.into();
                     let starting_block_weekly =
-                        latest_block.clone() - (gravity_config.block_per_day * 7).into();
+                        latest_block - (gravity_config.block_per_day * 7).into();
                     let starting_block_monthly =
-                        latest_block.clone() - (gravity_config.block_per_day * 30).into();
+                        latest_block - (gravity_config.block_per_day * 30).into();
                     let daily_volume = get_bridge_volume_for_range(
                         starting_block_daily,
-                        latest_block.clone(),
+                        latest_block,
                         &metadata,
                         gravity_contract_address,
                         &web3,
